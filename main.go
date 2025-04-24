@@ -1,11 +1,11 @@
 package main
 
 import (
+	"crypto/rand"
 	"database/sql"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"strings"
-	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -90,12 +90,10 @@ func maakWachtwoord(lengte int, hoofdletters, cijfers, symbolen bool) string {
 		tekens += specials
 	}
 
-	rand.Seed(time.Now().UnixNano())
-
 	wachtwoord := ""
 	for i := 0; i < lengte; i++ {
-		index := rand.Intn(len(tekens))
-		wachtwoord += string(tekens[index])
+		index, _ := rand.Int(rand.Reader, big.NewInt(int64(len(tekens))))
+		wachtwoord += string(tekens[index.Int64()])
 	}
 	return wachtwoord
 }
